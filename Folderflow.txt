@@ -1,0 +1,22 @@
+src/
+├── components/
+│   ├── common/
+│   │   ├── Button.js
+│   │   ├── Input.js
+│   │   ├── Modal.js
+│   │   └── Select.js
+│   ├── employees/
+│   ├── projects/
+│   └── tasks/
+├── contexts/
+│   └── AppContext.js
+├── pages/
+│   ├── Dashboard.js
+│   ├── Employees.js
+│   ├── Projects.js
+│   └── Tasks.js
+├── App.js
+├── App.css
+├── index.js
+└── styles/
+    └── main.css
