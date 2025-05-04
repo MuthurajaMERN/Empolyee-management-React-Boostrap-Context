@@ -10,23 +10,22 @@ const Input = ({
   placeholder = '', 
   error = null, 
   register = null, 
-  options = [], // For select inputs
-  multiple = false, // For multiple file/select inputs
+  options = [], 
+  multiple = false, 
   ...props 
 }) => {
   console.log(`Rendering Input component - Name: ${name}, Type: ${type}, Value: ${value}`);
 
   try {
-    // Handle both controlled (onChange) and uncontrolled (register) inputs
     const inputProps = register 
       ? { ...register(name) } 
       : { 
           name, 
-          value: type === 'file' ? undefined : value, // Files can't be controlled via value
+          value: type === 'file' ? undefined : value, 
           onChange: (e) => {
             try {
               if (onChange) {
-                // Handle file inputs differently
+                
                 if (type === 'file') {
                   onChange(multiple ? e.target.files : e.target.files[0]);
                 } else {

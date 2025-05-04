@@ -1,13 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { AppContext } from '../contexts/AppContext'; // Adjust path as needed
+import { AppContext } from '../contexts/AppContext'; 
+import Input from '../components/common/Input';
 
 const ProjectDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { projects, updateProject } = useContext(AppContext);
 
-  // State to manage the form
+ 
   const [form, setForm] = useState({
     name: '',
     description: '',
@@ -15,14 +16,14 @@ const ProjectDetail = () => {
     endDate: ''
   });
 
-  // Load the project details based on the ID
+  
   useEffect(() => {
     if (projects.length === 0) {
       console.log('Loading projects...');
       return;
     }
 
-    // Find the selected project
+   
     const selectedProject = projects.find((p) => String(p.id) === String(id));
 
     if (!selectedProject) {
@@ -39,14 +40,14 @@ const ProjectDetail = () => {
     }
   }, [projects, id, navigate]);
 
-  // Handle form field changes
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
     console.log('Form updated:', { ...form, [name]: value });
   };
 
-  // Handle form submission
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -58,25 +59,25 @@ const ProjectDetail = () => {
       return;
     }
 
-    // Validate form inputs
+    
     if (!form.name || !form.description || !form.startDate || !form.endDate) {
       alert('All fields are required!');
       console.warn('Form validation failed:', form);
       return;
     }
 
-    // Update the project
+    
     updateProject(selectedProject.id, { ...form });
 
-    // Success message
+   
     alert('Project updated successfully!');
     console.log('Project updated:', form);
 
-    // Redirect back to the projects list
+    
     navigate('/projects');
   };
 
-  // Display loading message when projects are still loading
+  
   if (!projects.length) {
     return <div>Loading project...</div>;
   }
@@ -87,7 +88,7 @@ const ProjectDetail = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-1">Project Name</label>
-          <input
+          <Input
             type="text"
             name="name"
             value={form.name}
@@ -108,7 +109,7 @@ const ProjectDetail = () => {
         </div>
         <div>
           <label className="block mb-1">Start Date</label>
-          <input
+          <Input
             type="date"
             name="startDate"
             value={form.startDate}
@@ -119,7 +120,7 @@ const ProjectDetail = () => {
         </div>
         <div>
           <label className="block mb-1">End Date</label>
-          <input
+          <Input
             type="date"
             name="endDate"
             value={form.endDate}

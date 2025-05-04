@@ -30,7 +30,7 @@ const Employees = () => {
     }
   });
 
-  // Field validation rules
+ 
   const validationRules = {
     name: { 
       required: 'Name is required',
@@ -167,7 +167,7 @@ const Employees = () => {
         }}
         title={editingEmployee ? 'Edit Employee' : 'Add Employee'}
         onSubmit={handleSubmit(onSubmit)}
-        size="fullscreen" // Changed to fullscreen
+        size="fullscreen" 
         disableSubmit={!isValid || !isDirty}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="p-3">

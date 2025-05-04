@@ -35,40 +35,37 @@ const Projects = () => {
     }
   }, [showModal]);
 
-  // Handle input changes
   const handleInput = (e) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
     setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // Handle image upload with validation
-  const handleImage = async (e) => {
-    const file = e.target.files?.[0];
+  const handleImage  = (e) => {
+    const file = e?.target?.files?.[0];
     if (!file) return;
-
-    // Validation
-    if (!file.type.match('image.*')) {
-      return setErrors(prev => ({ ...prev, logo: 'Only image files are allowed' }));
+  
+    // Validate image type
+    if (!file.type.startsWith('image/')) {
+      setErrors(prev => ({ ...prev, image: 'Only image files allowed' }));
+      return;
     }
-
+  
+    // Validate size (2MB max)
     if (file.size > 2 * 1024 * 1024) {
-      return setErrors(prev => ({ ...prev, logo: 'File size must be less than 2MB' }));
+      setErrors(prev => ({ ...prev, image: 'Max size 2MB' }));
+      return;
     }
-
-    try {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setForm(prev => ({ ...prev, logo: event.target.result }));
-      };
-      reader.readAsDataURL(file);
-    } catch (error) {
-      console.error('Error processing image:', error);
-      setErrors(prev => ({ ...prev, logo: 'Failed to process image' }));
-    }
+  
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+      setPreview(loadEvent.target.result);
+      setFormValue('image', loadEvent.target.result);
+      setErrors(prev => ({ ...prev, image: '' }));
+    };
+    reader.onerror = () => setErrors(prev => ({ ...prev, image: 'Upload failed' }));
+    reader.readAsDataURL(file);
   };
-
-  // Toggle employee assignment
   const toggleEmployee = (employeeId) => {
     setForm(prev => ({
       ...prev,
@@ -81,7 +78,6 @@ const Projects = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate form
     const newErrors = {};
     if (!form.title.trim()) newErrors.title = 'Title is required';
     if (!form.description.trim()) newErrors.description = 'Description is required';
@@ -113,7 +109,6 @@ const Projects = () => {
       }
   
       setShowModal(false);
-      // No need to reset form here since useEffect will handle it
     } catch (error) {
       console.error('Failed to save project:', error);
       setErrors(prev => ({ 
@@ -124,13 +119,11 @@ const Projects = () => {
       setIsSubmitting(false);
     }
   };
-  // Edit project
   const handleEdit = (project) => {
     setForm(project);
     setShowModal(true);
   };
 
-  // Delete project with confirmation
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this project?')) {
       try {
@@ -219,7 +212,7 @@ const Projects = () => {
   
       <div className="mb-3">
         <label className="form-label">Title *</label>
-        <input
+        <Input
           type="text"
           name="title"
           className={`form-control ${errors.title ? 'is-invalid' : ''}`}
@@ -246,12 +239,12 @@ const Projects = () => {
       </div>
   
       <div className="mb-3">
-        <label className="form-label">Logo *</label>
-        <input
+        <label htmlFor="Upload Logo" className="form-label">Logo *</label>
+        <Input
           type="file"
           accept="image/*"
           className={`form-control ${errors.logo ? 'is-invalid' : ''}`}
-          onChange={handleImage}
+          onChange={(e)=>handleImage(e)}
         />
         {errors.logo && (
           <div className="invalid-feedback">{errors.logo}</div>
@@ -261,7 +254,7 @@ const Projects = () => {
             src={form.logo} 
             alt="Preview" 
             className="img-thumbnail mt-2" 
-            style={{ maxHeight: '100px' }} 
+            style={{ maxHeight: '700px' }} 
           />
         )}
       </div>
@@ -272,7 +265,7 @@ const Projects = () => {
           <div className="border rounded p-2" style={{ maxHeight: '200px', overflowY: 'auto' }}>
             {employees.map(employee => (
               <div key={employee.id} className="form-check">
-                <input
+                <Input
                   type="checkbox"
                   className="form-check-input"
                   id={`emp-${employee.id}`}
